@@ -8,8 +8,8 @@
 
 #import <Foundation/Foundation.h>
 
-#define IMAGE_CROPPER_OUTSIDE_STILL_TOUCHABLE 40.0f
-#define IMAGE_CROPPER_INSIDE_STILL_EDGE 20.0f
+#define IMAGE_CROPPER_OUTSIDE_STILL_TOUCHABLE 20.0f
+#define IMAGE_CROPPER_INSIDE_STILL_EDGE 10.0f
 
 #ifndef __has_feature
 // not LLVM Compiler

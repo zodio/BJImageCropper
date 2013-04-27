@@ -128,7 +128,17 @@
         frame.origin.y = 0;
 
     
-    return CGRectMake(frame.origin.x / imageScale, frame.origin.y / imageScale, frame.size.width / imageScale, frame.size.height / imageScale);;
+    return CGRectMake(roundf(frame.origin.x / imageScale),
+                      roundf(frame.origin.y / imageScale),
+                      roundf(frame.size.width / imageScale),
+                      roundf(frame.size.height / imageScale));
+    
+//    return CGRectMake(frame.origin.x / imageScale,
+//                      frame.origin.y / imageScale,
+//                      frame.size.width / imageScale,
+//                      frame.size.height / imageScale);
+//    return CGRectMake(frame.origin.x, frame.origin.y, frame.size.width, frame.size.height);;
+
 }
 
 - (void)setCrop:(CGRect)crop {
@@ -168,11 +178,22 @@
     CGFloat x      = (CGWidth(max) - width) / 2;
     CGFloat y      = (CGHeight(max) - height) / 2;
     
-    UIView* cropView = [[UIView alloc] initWithFrame:CGRectMake(x, y, width, height)];
-    cropView.layer.borderColor = [[UIColor whiteColor] CGColor];
-    cropView.layer.borderWidth = 2.0;
+//    CGFloat width  = CGWidth(max);
+//    CGFloat height = CGHeight(max);
+//    CGFloat x      = (CGWidth(max) - width);
+//    CGFloat y      = (CGHeight(max) - height);
+    
+//    UIView* cropView = [[UIView alloc] initWithFrame:CGRectMake(x, y, width, height)];
+    
+    UIImage *cropBorder = [UIImage imageNamed:@"ZPage_Photo_Crop"];
+    cropBorder = [cropBorder resizableImageWithCapInsets:UIEdgeInsetsMake(14, 14, 14, 14)];
+    UIImageView *cropView = [[UIImageView alloc] initWithFrame:CGRectMake(x, y, width, height)];
+    [cropView setImage:cropBorder];
+    
+//    cropView.layer.borderColor = [[UIColor whiteColor] CGColor];
+//    cropView.layer.borderWidth = 2.0;
     cropView.backgroundColor = [UIColor clearColor];
-    cropView.alpha = 0.4;   
+//    cropView.alpha = 0.4;   
     
 #ifdef ARC
     return cropView;
@@ -220,6 +241,9 @@
     // first, try scaling the height to fit
     imageScale = (maxSize.height - increase) / image.size.height;
     scaled = CGRectMake(0.0, 0.0, image.size.width * imageScale + increase, image.size.height * imageScale + increase);
+//    scaled = CGRectMake(0.0, 0.0, maxSize.width, image.size.height * imageScale + increase);
+    scaled.origin.x = (maxSize.width - scaled.size.width)/2;
+
     if (CGWidth(scaled) <= maxSize.width && CGHeight(scaled) <= maxSize.height) {
         return scaled;
     }
@@ -227,6 +251,9 @@
     // scale with width if that failed
     imageScale = (maxSize.width - increase) / image.size.width;
     scaled = CGRectMake(0.0, 0.0, image.size.width * imageScale + increase, image.size.height * imageScale + increase);
+//    scaled = CGRectMake(0.0, 0.0, image.size.width * imageScale + increase, maxSize.height);
+    scaled.origin.y = (maxSize.height - scaled.size.height)/2;
+
     return scaled;
 }
 
@@ -270,9 +297,14 @@
 - (id)initWithImage:(UIImage*)newImage andMaxSize:(CGSize)maxSize {
     self = [super init];
     if (self) {
+        
+//        CGRect frame = [self calcFrameWithImage:newImage andMaxSize:maxSize];
         self.frame = [self calcFrameWithImage:newImage andMaxSize:maxSize];
         
-        imageView = [[UIImageView alloc] initWithFrame:CGRectInset(self.bounds, IMAGE_CROPPER_OUTSIDE_STILL_TOUCHABLE, IMAGE_CROPPER_OUTSIDE_STILL_TOUCHABLE)];
+        CGRect imageViewRect = CGRectInset(self.bounds, IMAGE_CROPPER_OUTSIDE_STILL_TOUCHABLE, IMAGE_CROPPER_OUTSIDE_STILL_TOUCHABLE);
+        
+        imageView = [[UIImageView alloc] initWithFrame:imageViewRect];
+        imageView.contentMode = UIViewContentModeScaleAspectFit;
         imageView.image = newImage;
         [self addSubview:imageView];
         [self setup];
