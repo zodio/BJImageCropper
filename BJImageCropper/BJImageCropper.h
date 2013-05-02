@@ -53,7 +53,7 @@
 
 - (id)initWithImage:(UIImage*)newImage;
 - (id)initWithImage:(UIImage*)newImage andMaxSize:(CGSize)maxSize;
-
+- (CGRect)scaledCrop;
 - (UIImage*) getCroppedImage;
 
 @end

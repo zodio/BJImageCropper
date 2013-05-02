@@ -151,6 +151,21 @@
     return CGRectMake(crop.origin.x * imageScale, crop.origin.y * imageScale, crop.size.width * imageScale, crop.size.height * imageScale);
 }
 
+- (CGRect)scaledCrop
+{
+    CGRect originalCropRect = [self crop];
+    
+    CGFloat imageWidth = self.image.size.width;
+    CGFloat imageHeight = self.image.size.height;
+    
+    CGFloat scaledOriginX = originalCropRect.origin.x / imageWidth;
+    CGFloat scaledOriginY = originalCropRect.origin.y / imageHeight;
+    CGFloat scaledWidth = (originalCropRect.origin.x + originalCropRect.size.width) / imageWidth;
+    CGFloat scaledHeight = (originalCropRect.origin.y + originalCropRect.size.height) / imageHeight;
+    
+    return CGRectMake(scaledOriginX, scaledOriginY, scaledWidth, scaledHeight);
+}
+
 - (UIView*)newEdgeView {
     UIView *view = [[UIView alloc] init];
     view.backgroundColor = [UIColor blackColor];
